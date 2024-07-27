@@ -1,0 +1,42 @@
+
+# Library Used
+
+library(tidyverse)
+
+# Data Loading
+
+read_csv("data/GLB.Ts+dSST.csv", skip = 1 , na="***")%>%
+  select(year=Year,t_diff='J-D')%>%
+  ggplot(aes(x=year,y=t_diff))+
+  labs(
+    title= "GLOBAL LAND-OCEAN TEMPERATURE INDEX",
+    x = "Year",
+    y = "Temperature Anamoly(C)",
+    subtitle = "Data source: NASA's Goddard Institute for Space Studies (GISS).\nCredit: NASA/GISS"
+  )+
+  geom_line(aes(colour = "1"), size=0.5, show.legend = F)+
+  geom_point(fill="white",aes(colour = "1"), shape=21, show.legend = T)+
+  geom_smooth(se=F, aes(colour = "2"), size=1,span=0.15, show.legend = F)+
+  scale_x_continuous(breaks = seq(1880,2024,20), expand = c(0,0))+
+  scale_y_continuous(limits = c(-0.5,1.5), expand = c(0,0))+
+  scale_color_manual(
+    name=NULL,
+    breaks = c(1,2),
+    values = c("gray","black"),
+    labels= c("Annual Mean", "Lowest Smoothing"),
+    guide = guide_legend(override.aes = list(shape=15, size=5))
+  )+
+  theme_light()+
+  theme(
+    axis.ticks = element_blank(),
+    plot.title.position = "plot",
+    plot.title = element_text(margin = margin(b=10), colour = "red", face = "bold"),
+    plot.subtitle = element_text(size = 8,margin = margin(b=10)),
+    legend.position = c(0.15,0.9),
+    legend.title = element_text(size = 0),
+    legend.margin = margin(0,0,0,0)
+  )
+
+
+
+ggsave("figures/temperature_index_plot.png",width = 6, height = 4)
